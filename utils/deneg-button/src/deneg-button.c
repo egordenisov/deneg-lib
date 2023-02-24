@@ -59,7 +59,7 @@ void button_task (button_ctx* ctx) {
             ctx->lpush = true;
             ctx->spush = false;
             CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
-            //CALL_CALLBACK_IF_NOT_NULL (ctx->lpush_callback);
+            CALL_CALLBACK_IF_NOT_NULL (ctx->lpush_callback);
         }
     }
     else { // If no push
