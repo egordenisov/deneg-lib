@@ -3,7 +3,7 @@
 #include "stdint.h"
 
 extern "C" {
-    #include "../include/deneg-button.h"
+    #include "deneg-button.h"
 }
 
 static const uint64_t init_time = 67589729;
