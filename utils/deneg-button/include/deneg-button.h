@@ -27,7 +27,8 @@ typedef struct {
     bool push;
     bool lpush;
     bool spush;
-    bool latch;
+    bool latch_time;
+    bool latch_long;
 } button_ctx;
 
 bool button_init (button_ctx* ctx, button_get_time_us time, button_get_gpio_state gpio, bool active_high);

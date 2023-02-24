@@ -52,14 +52,14 @@ TEST(button_init, set_init_values)
     ctx.push = 1;
     ctx.spush = 1;
     ctx.lpush = 1;
-    ctx.latch = 1;
+    ctx.latch_time = 1;
 
     bool ret = 0;
     ret = button_init (&ctx, get_time_us, get_gpio_state, 0);
 
     EXPECT_EQ(ret, 1);
     EXPECT_EQ(ctx.push, 0);
-    EXPECT_EQ(ctx.latch, 0);
+    EXPECT_EQ(ctx.latch_time, 0);
     EXPECT_EQ(ctx.lpush, 0);
     EXPECT_EQ(ctx.spush, 0);
 }
@@ -172,16 +172,16 @@ TEST(button_task, long_push)
     run_button_task (init_time + long_min_time, false, 0, 0, 0);
 
     // Enough time for a short push
-    run_button_task (init_time + long_min_time*2 + 1, false, 0, 0, 0);
-
-    // Releasing the button
     test_push_callback_called = false;
     test_spush_callback_called = false;
     test_lpush_callback_called = false;
-    run_button_task (init_time + long_min_time*2 + 1, true, 1, 0, 1);
+    run_button_task (init_time + long_min_time*2 + 1, false, 1, 0, 1);
     EXPECT_EQ(test_push_callback_called, true);
     EXPECT_EQ(test_spush_callback_called, false);
     EXPECT_EQ(test_lpush_callback_called, true);
+
+    // Releasing the button
+    run_button_task (init_time + long_min_time*2 + 1, true, 1, 0, 1);
 }
 
 TEST(button_task, short_push_repeat)
@@ -227,7 +227,7 @@ TEST(button_task, long_push_repeat)
     run_button_task (init_time, false, 0, 0, 0);
 
     // Short push
-    run_button_task (init_time + long_min_time + 1, false, 0, 0, 0);
+    run_button_task (init_time + long_min_time + 1, false, 1, 0, 1);
 
     // Release button
     run_button_task (init_time + long_min_time + 1, true, 1, 0, 1);
@@ -240,7 +240,7 @@ TEST(button_task, long_push_repeat)
     run_button_task (init_time + long_min_time * 2, false, 0, 0, 0);
 
     // Push again
-    run_button_task (init_time + long_min_time * 3 + 1, false, 0, 0, 0);
+    run_button_task (init_time + long_min_time * 3 + 1, false, 1, 0, 1);
 
     // Release button
     run_button_task (init_time + long_min_time * 3 + 1, true, 1, 0, 1);
