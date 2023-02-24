@@ -46,31 +46,31 @@ void button_set_lpush_cb (button_ctx* ctx, button_callback cb) {
 #define CALL_CALLBACK_IF_NOT_NULL(x) {if (x != NULL) x();}
 
 void button_task (button_ctx* ctx) {
+    uint64_t time_now = ctx->get_time_us();
     if (ctx->get_gpio_state() == ctx->is_gpio_active_high) { // If pushed
-        if (!ctx->latch) {
-            ctx->timestamp = ctx->get_time_us();
-            ctx->latch = true;
+        if (!ctx->latch_time) {
+            ctx->timestamp = time_now;
+            ctx->latch_time = true;
+        }
+        if (!ctx->latch_long && (time_now - ctx->timestamp >= ctx->lpush_period_us)) {
+            ctx->latch_long = true;
+
+            ctx->push = true;
+            ctx->lpush = true;
+            ctx->spush = false;
+            CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
+            CALL_CALLBACK_IF_NOT_NULL (ctx->lpush_callback);
         }
     }
     else { // If no push
-        if (ctx->latch == true) {
-            uint64_t time_now = ctx->get_time_us();
-
-            if (time_now - ctx->timestamp > ctx->lpush_period_us) {
-                ctx->push = true;
-                ctx->lpush = true;
-                ctx->spush = false;
-                CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
-                CALL_CALLBACK_IF_NOT_NULL (ctx->lpush_callback);
-            }
-            else if (time_now - ctx->timestamp > ctx->spush_period_us) {
-                ctx->push = true;
-                ctx->lpush = false;
-                ctx->spush = true;
-                CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
-                CALL_CALLBACK_IF_NOT_NULL (ctx->spush_callback);
-            }
+        if (ctx->latch_time && !ctx->latch_long && (time_now - ctx->timestamp >= ctx->spush_period_us)) {
+            ctx->push = true;
+            ctx->lpush = false;
+            ctx->spush = true;
+            CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
+            CALL_CALLBACK_IF_NOT_NULL (ctx->spush_callback);
         }
-        ctx->latch = false;
+        ctx->latch_time = false;
+        ctx->latch_long = false;
     }
 }
