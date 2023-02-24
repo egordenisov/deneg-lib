@@ -4,34 +4,44 @@
 #include "stdint.h"
 #include "stdbool.h"
 
-typedef uint64_t (*deneg_get_time_us)    ();
-typedef bool     (*deneg_get_gpio_state) ();
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-typedef struct
-{
-    // User area
-    deneg_get_time_us       get_time_us;
-    deneg_get_gpio_state    get_gpio_state;
-    
-    bool        gpio_active_high;
-    uint32_t    short_push_time_us;
-    uint32_t    long_push_time_us;
+typedef uint64_t (*button_get_time_us)      ();
+typedef bool     (*button_get_gpio_state)   ();
+typedef void     (*button_callback)         ();
 
-    // Private area
+typedef struct {
+    button_get_time_us     get_time_us;
+    button_get_gpio_state  get_gpio_state;
+    button_callback        push_callback;
+    button_callback        spush_callback;
+    button_callback        lpush_callback;
+
+    bool            is_gpio_active_high;
+    uint32_t        spush_period_us;
+    uint32_t        lpush_period_us;
+
     uint64_t timestamp;
     bool push;
-    bool long_push;
-    bool short_push;
+    bool lpush;
+    bool spush;
     bool latch;
+} button_ctx;
 
-} deneg_button_ctx;
+bool button_init (button_ctx* ctx, button_get_time_us time, button_get_gpio_state gpio, bool active_high);
 
-bool deneg_button_init          (deneg_button_ctx* ctx);
+bool button_custom_timing (button_ctx* ctx, uint32_t short_period, uint32_t long_period);
 
-bool deneg_button_is_push       (deneg_button_ctx* ctx);
-bool deneg_button_is_short_push (deneg_button_ctx* ctx);
-bool deneg_button_is_long_push  (deneg_button_ctx* ctx);
+void button_set_push_cb  (button_ctx* ctx, button_callback cb);
+void button_set_spush_cb (button_ctx* ctx, button_callback cb);
+void button_set_lpush_cb (button_ctx* ctx, button_callback cb);
 
-void deneg_button_task          (deneg_button_ctx* ctx);
+void button_task         (button_ctx* ctx);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // #ifndef __DENEG_BUTTON_H

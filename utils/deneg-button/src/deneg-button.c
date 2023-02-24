@@ -1,77 +1,76 @@
-#include <stdio.h>
+#include <string.h>
 #include "../include/deneg-button.h"
 
-bool deneg_button_init (deneg_button_ctx* ctx) {
+#define BUTTON_SPUSH_PERIOD_DEFAULT_US ( 100*1000)
+#define BUTTON_LPUSH_PERIOD_DEFAULT_US (1000*1000)
+
+bool button_init (button_ctx* ctx, button_get_time_us time, button_get_gpio_state gpio, bool active_high) {
     if (ctx == NULL) {
         return false;
     }
-    if (ctx->get_gpio_state == NULL) {
+    if (!time || !gpio) {
         return false;
     }
-    if (ctx->get_time_us == NULL) {
-        return false;
-    }
+    memset(ctx, 0, sizeof(button_ctx));
 
-    ctx->push = false;
-    ctx->latch = false;
-    ctx->long_push = false;
-    ctx->short_push = false;
+    ctx->is_gpio_active_high = active_high;
+    ctx->get_gpio_state = gpio;
+    ctx->get_time_us = time;
 
-    ctx->timestamp = 0;
+    ctx->spush_period_us = BUTTON_SPUSH_PERIOD_DEFAULT_US;
+    ctx->lpush_period_us = BUTTON_LPUSH_PERIOD_DEFAULT_US;
 
     return true;
 }
 
-bool deneg_button_is_push (deneg_button_ctx* ctx) {
-    bool buf = ctx->push;
-    ctx->push = false;
-    ctx->long_push = false;
-    ctx->short_push = false;
-
-    return buf;
+bool button_custom_timing (button_ctx* ctx, uint32_t short_period, uint32_t long_period) {
+    if (long_period < short_period) {
+        return false;
+    }
+    ctx->spush_period_us = short_period;
+    ctx->lpush_period_us = long_period;
 }
 
-bool deneg_button_is_short_push (deneg_button_ctx* ctx) {
-    bool buf = ctx->short_push;
-    ctx->push = false;
-    ctx->long_push = false;
-    ctx->short_push = false;
-
-    return buf;
+void button_set_push_cb  (button_ctx* ctx, button_callback cb) {
+    ctx->push_callback = cb;
 }
 
-bool deneg_button_is_long_push (deneg_button_ctx* ctx) {
-    bool buf = ctx->long_push;
-    ctx->push = false;
-    ctx->long_push = false;
-    ctx->short_push = false;
-
-    return buf;
+void button_set_spush_cb (button_ctx* ctx, button_callback cb) {
+    ctx->spush_callback = cb;
 }
 
-void deneg_button_task (deneg_button_ctx* ctx) {
-    uint64_t time_now = ctx->get_time_us();
+void button_set_lpush_cb (button_ctx* ctx, button_callback cb) {
+    ctx->lpush_callback = cb;
+}
 
-    if (ctx->get_gpio_state() == ctx->gpio_active_high) { // If pushed
+#define CALL_CALLBACK_IF_NOT_NULL(x) {if (x != NULL) x();}
+
+void button_task (button_ctx* ctx) {
+    if (ctx->get_gpio_state() == ctx->is_gpio_active_high) { // If pushed
         if (!ctx->latch) {
-            ctx->timestamp = time_now;
+            ctx->timestamp = ctx->get_time_us();
             ctx->latch = true;
-        }
-
-        if (time_now - ctx->timestamp > ctx->short_push_time_us) {
-            ctx->push = true;
-
-            if (time_now - ctx->timestamp > ctx->long_push_time_us) {
-                ctx->short_push = false;
-                ctx->long_push = true;
-            }
-            else {
-                ctx->short_push = true;
-                ctx->long_push = false;
-            }
         }
     }
     else { // If no push
+        if (ctx->latch == true) {
+            uint64_t time_now = ctx->get_time_us();
+
+            if (time_now - ctx->timestamp > ctx->lpush_period_us) {
+                ctx->push = true;
+                ctx->lpush = true;
+                ctx->spush = false;
+                CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
+                CALL_CALLBACK_IF_NOT_NULL (ctx->lpush_callback);
+            }
+            else if (time_now - ctx->timestamp > ctx->spush_period_us) {
+                ctx->push = true;
+                ctx->lpush = false;
+                ctx->spush = true;
+                CALL_CALLBACK_IF_NOT_NULL (ctx->push_callback);
+                CALL_CALLBACK_IF_NOT_NULL (ctx->spush_callback);
+            }
+        }
         ctx->latch = false;
     }
 }

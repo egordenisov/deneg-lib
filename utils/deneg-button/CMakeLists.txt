@@ -10,3 +10,6 @@ target_sources(${PROJECT_NAME} PUBLIC
     "${PROJECT_SOURCE_DIR}/include/deneg-button.h"
     "${PROJECT_SOURCE_DIR}/src/deneg-button.c"
 )
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "${PROJECT_SOURCE_DIR}/include"
+)
