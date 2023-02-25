@@ -10,8 +10,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(utils/deneg-button)
-
+add_subdirectory(drivers/button-driver)
 add_subdirectory(drivers/st7789-driver)
 add_subdirectory(drivers/encoder-driver)
 

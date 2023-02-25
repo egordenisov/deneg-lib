@@ -3,7 +3,7 @@
 #include "stdint.h"
 
 
-#include "deneg-button.h"
+#include "button-driver.h"
 
 
 static const uint64_t init_time = 67589729;
