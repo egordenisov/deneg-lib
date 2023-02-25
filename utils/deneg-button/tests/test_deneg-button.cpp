@@ -2,9 +2,9 @@
 #include "stdbool.h"
 #include "stdint.h"
 
-extern "C" {
-    #include "deneg-button.h"
-}
+
+#include "deneg-button.h"
+
 
 static const uint64_t init_time = 67589729;
 static const uint32_t short_min_time = 4500;
