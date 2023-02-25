@@ -43,7 +43,7 @@ void button_set_lpush_cb (button_ctx* ctx, button_callback cb) {
     ctx->lpush_callback = cb;
 }
 
-#define CALL_CALLBACK_IF_NOT_NULL(x) {if (x != NULL) x();}
+#define CALL_CALLBACK_IF_NOT_NULL(x) {if ((x) != NULL) x();}
 
 void button_task (button_ctx* ctx) {
     uint64_t time_now = ctx->get_time_us();

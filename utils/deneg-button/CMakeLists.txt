@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(deneg-button)
+project(deneg-button C CXX)
 set(CMAKE_CXX_STANDARD 14)
 
 add_library(deneg-button STATIC)

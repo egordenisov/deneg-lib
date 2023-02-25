@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(st7789-driver)
+project(st7789-driver C CXX)
 
 add_library(${PROJECT_NAME})
 
