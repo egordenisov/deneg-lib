@@ -14,3 +14,6 @@ add_subdirectory(drivers/button-driver)
 add_subdirectory(drivers/st7789-driver)
 add_subdirectory(drivers/encoder-driver)
 
+enable_testing()
+include(GoogleTest)
+
