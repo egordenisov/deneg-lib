@@ -1,8 +1,5 @@
 #include <string.h>
-#include "deneg-button.h"
-
-#define BUTTON_SPUSH_PERIOD_DEFAULT_US ( 100*1000)
-#define BUTTON_LPUSH_PERIOD_DEFAULT_US (1500*1000)
+#include "button-driver.h"
 
 bool button_init (button_ctx* ctx, button_get_time_us time, button_get_gpio_state gpio, bool active_high) {
     if (ctx == NULL) {
@@ -43,7 +40,7 @@ void button_set_lpush_cb (button_ctx* ctx, button_callback cb) {
     ctx->lpush_callback = cb;
 }
 
-#define CALL_CALLBACK_IF_NOT_NULL(x) {if (x != NULL) x();}
+#define CALL_CALLBACK_IF_NOT_NULL(x) {if ((x) != NULL) x();}
 
 void button_task (button_ctx* ctx) {
     uint64_t time_now = ctx->get_time_us();

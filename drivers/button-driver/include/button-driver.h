@@ -1,5 +1,5 @@
-#ifndef __DENEG_BUTTON_H
-#define __DENEG_BUTTON_H
+#ifndef __BUTTON_DRIVER_H
+#define __BUTTON_DRIVER_H
 
 #include "stdint.h"
 #include "stdbool.h"
@@ -11,6 +11,9 @@ extern "C" {
 typedef uint64_t (*button_get_time_us)      ();
 typedef bool     (*button_get_gpio_state)   ();
 typedef void     (*button_callback)         ();
+
+#define BUTTON_SPUSH_PERIOD_DEFAULT_US ( 100*1000)
+#define BUTTON_LPUSH_PERIOD_DEFAULT_US (1500*1000)
 
 typedef struct {
     button_get_time_us     get_time_us;
@@ -35,14 +38,14 @@ bool button_init (button_ctx* ctx, button_get_time_us time, button_get_gpio_stat
 
 bool button_custom_timing (button_ctx* ctx, uint32_t short_period, uint32_t long_period);
 
-void button_set_push_cb  (button_ctx* ctx, button_callback cb);
+void button_set_push_cb (button_ctx* ctx, button_callback cb);
 void button_set_spush_cb (button_ctx* ctx, button_callback cb);
 void button_set_lpush_cb (button_ctx* ctx, button_callback cb);
 
-void button_task         (button_ctx* ctx);
+void button_task (button_ctx* ctx);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // #ifndef __DENEG_BUTTON_H
+#endif // #ifndef __BUTTON_DRIVER_H
