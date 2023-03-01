@@ -16,7 +16,7 @@ target_include_directories(st7789-driver PUBLIC
 #
 # GoogleTest
 #
-
+if(DEFINED BUILD_WITH_TESTS)
 enable_testing()
 add_executable(st7789-driver-tests 
     "tests/test-st7789-driver.cpp"
@@ -27,3 +27,4 @@ target_link_libraries(st7789-driver-tests PUBLIC
 )
 include(GoogleTest)
 gtest_discover_tests(st7789-driver-tests)
+endif()

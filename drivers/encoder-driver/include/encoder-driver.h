@@ -25,7 +25,7 @@ typedef bool     (*encoder_get_gpio_state)   ();
 typedef void     (*encoder_callback)         ();
 
 // Default minimum time to latch state in us
-#define ENCODER_FIX_STATE_PERIOD_DEFAULT_US ( 5*1000 )
+#define ENCODER_FIX_STATE_PERIOD_DEFAULT_US ( 50 )
 
 typedef struct {
     //

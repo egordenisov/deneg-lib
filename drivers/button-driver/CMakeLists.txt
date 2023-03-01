@@ -16,7 +16,7 @@ target_include_directories(button-driver PUBLIC
 #
 # GoogleTest
 #
-
+if(DEFINED BUILD_WITH_TESTS)
 enable_testing()
 add_executable(button-driver-tests 
     "tests/test-button-driver.cpp"
@@ -27,3 +27,4 @@ target_link_libraries(button-driver-tests PUBLIC
 )
 include(GoogleTest)
 gtest_discover_tests(button-driver-tests)
+endif()
