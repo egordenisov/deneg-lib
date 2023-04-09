@@ -15,6 +15,7 @@ endif()
 add_subdirectory(drivers/button-driver)
 add_subdirectory(drivers/st7789-driver)
 add_subdirectory(drivers/encoder-driver)
+add_subdirectory(drivers/ssd1306-driver)
 
 if(DEFINED BUILD_WITH_TESTS)
   enable_testing()
