@@ -17,6 +17,8 @@ add_subdirectory(drivers/st7789-driver)
 add_subdirectory(drivers/encoder-driver)
 add_subdirectory(drivers/ssd1306-driver)
 
+add_subdirectory(math/position-calc)
+
 if(DEFINED BUILD_WITH_TESTS)
   enable_testing()
   include(GoogleTest)
