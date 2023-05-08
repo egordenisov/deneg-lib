@@ -70,15 +70,15 @@ TEST(tmp112_init, set_zero_values)
 {
     uint8_t rc = 0;
     rc = tmp112_init(NULL, i2c_write, i2c_read, &phy_i2c_ctx);
-    EXPECT_EQ(rc, TMP112_INVALID_INPUT);
+    EXPECT_EQ(rc, TMP112_ERROR_INVALID_INPUT);
 
     rc = 0;
     rc = tmp112_init(&tmp112_ctx, NULL, i2c_read, &phy_i2c_ctx);
-    EXPECT_EQ(rc, TMP112_INVALID_INPUT);
+    EXPECT_EQ(rc, TMP112_ERROR_INVALID_INPUT);
 
     rc = 0;
     rc = tmp112_init(&tmp112_ctx, i2c_write, NULL, &phy_i2c_ctx);
-    EXPECT_EQ(rc, TMP112_INVALID_INPUT);
+    EXPECT_EQ(rc, TMP112_ERROR_INVALID_INPUT);
 
     rc = 0;
     rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, NULL);
