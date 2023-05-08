@@ -12,19 +12,3 @@ target_sources(button-driver PUBLIC
 target_include_directories(button-driver PUBLIC
 "${PROJECT_SOURCE_DIR}/include"
 )
-
-#
-# GoogleTest
-#
-if(DEFINED BUILD_WITH_TESTS)
-enable_testing()
-add_executable(button-driver-tests 
-    "tests/test-button-driver.cpp"
-)
-target_link_libraries(button-driver-tests PUBLIC
-    button-driver
-    GTest::gtest_main
-)
-include(GoogleTest)
-gtest_discover_tests(button-driver-tests)
-endif()

@@ -13,18 +13,3 @@ target_include_directories(encoder-driver PUBLIC
 "${PROJECT_SOURCE_DIR}/include"
 )
 
-
-# GoogleTest
-
-if(DEFINED BUILD_WITH_TESTS)
-enable_testing()
-add_executable(encoder-driver-tests 
-    "tests/test-encoder-driver.cpp"
-)
-target_link_libraries(encoder-driver-tests PUBLIC
-    encoder-driver
-    GTest::gtest_main
-)
-include(GoogleTest)
-gtest_discover_tests(encoder-driver-tests)
-endif()

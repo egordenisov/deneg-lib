@@ -16,8 +16,11 @@ add_subdirectory(drivers/button-driver)
 add_subdirectory(drivers/st7789-driver)
 add_subdirectory(drivers/encoder-driver)
 add_subdirectory(drivers/ssd1306-driver)
+add_subdirectory(drivers/tmp112-driver)
 
 add_subdirectory(math/position-calc)
+
+add_subdirectory(tests/drivers)
 
 if(DEFINED BUILD_WITH_TESTS)
   enable_testing()

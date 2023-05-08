@@ -1,35 +1,11 @@
-#ifndef __TMP112_DRIVER_H
-#define __TMP112_DRIVER_H
+#ifndef __TMP112_REGS_H
+#define __TMP112_REGS_H
 
 #include "stdint.h"
 
 #define TMP112_REGS_TEMP    (0x00)
-typedef union {
-    struct {
-        uint16_t reserved : 4;
-        uint16_t temp: 12;
-    } bf;
-    uint16_t word;
-} tmp112_regs_temp_t;
-
 #define TMP112_REGS_TLOW    (0x02)
-typedef union {
-    struct {
-        uint16_t reserved : 4;
-        uint16_t tlow: 12;
-    } bf;
-    uint16_t word;
-} tmp112_regs_tlow_t;
-
 #define TMP112_REGS_THIGH   (0x03)
-typedef union {
-    struct {
-        uint16_t reserved : 4;
-        uint16_t thigh: 12;
-    } bf;
-    uint16_t word;
-} tmp112_regs_thigh_t;
-
 #define TMP112_REGS_CONFIG  (0x01)
 
 #define TMP112_REGS_CONFIG_FAUTLT_QUEUE_1   (0x00) // Default
@@ -58,14 +34,8 @@ typedef union {
     uint16_t word;
 } tmp112_regs_config_t;
 
+#define TMP112_UNSIG_RESOLUTION     (TMP112_RESOLUTION - 1)
+#define TMP112_RESOLUTION_MASK       ((1 << TMP112_RESOLUTION) - 1)
+#define TMP112_UNSIG_RESOLUTION_MASK ((1 << (TMP112_RESOLUTION - 1)) - 1)
 
-#pragma pack(push,1)
-typedef struct {
-    tmp112_regs_temp_t      TEMP;
-    tmp112_regs_config_t    CONFIG;
-    tmp112_regs_tlow_t      TLOW;
-    tmp112_regs_thigh_t     THIGH;
-} tmp112_regs_t;
-#pragma pack(pop)
-
-#endif // __TMP112_DRIVER_H
+#endif // __TMP112_REGS_H

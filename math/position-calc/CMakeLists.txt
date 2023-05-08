@@ -12,19 +12,3 @@ target_sources(position-calc PUBLIC
 target_include_directories(position-calc PUBLIC
 "${PROJECT_SOURCE_DIR}/include"
 )
-
-#
-# GoogleTest
-#
-if(DEFINED BUILD_WITH_TESTS)
-enable_testing()
-add_executable(position-calc-tests 
-    "tests/test-position-calc.cpp"
-)
-target_link_libraries(position-calc-tests PUBLIC
-    position-calc
-    GTest::gtest_main
-)
-include(GoogleTest)
-gtest_discover_tests(position-calc-tests)
-endif()

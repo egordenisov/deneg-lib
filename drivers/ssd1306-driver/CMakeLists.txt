@@ -15,17 +15,4 @@ target_include_directories(ssd1306-driver PUBLIC
 )
 
 
-# GoogleTest
 
-# if(DEFINED BUILD_WITH_TESTS)
-# enable_testing()
-# add_executable(ssd1306-driver-tests 
-#     "tests/test-ssd1306-driver.cpp"
-# )
-# target_link_libraries(ssd1306-driver-tests PUBLIC
-#     ssd1306-driver
-#     GTest::gtest_main
-# )
-# include(GoogleTest)
-# gtest_discover_tests(ssd1306-driver-tests)
-# endif()
