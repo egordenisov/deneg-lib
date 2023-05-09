@@ -1,6 +1,11 @@
 #ifndef __TMP112_DRIVER_H
 #define __TMP112_DRIVER_H
 
+/*
+* TMP112 temperature sensor driver
+* supports only basic functions
+*/
+
 #include "stdint.h"
 #include "stdbool.h"
 #include "stddef.h"
@@ -48,12 +53,52 @@ typedef enum {
     TMP112_CONV_RATE_8Hz         = 0x03,
 } tmp112_conv_rate_t;
 
+/**
+ * @brief Call this function before using driver
+ * 
+ * @param ctx pointer to a user-created context structure
+ * @param wr pointer to a user-created i2c write function
+ * @param rd pointer to a user-created i2c read function
+ * @param phy_i2c user context for i2c functions (NULL if not used)
+ * @return tmp112_error_t enum
+ */
 tmp112_error_t tmp112_init (tmp112_ctx_t* ctx, tmp112_i2c_write_t wr, tmp112_i2c_read_t rd, void* phy_i2c);
 
+/**
+ * @brief TMP112 temperature reading
+ * 
+ * @param ctx pointer to context
+ * @param temp temperature returns in degree Celsius
+ * @return tmp112_error_t enum
+ */
 tmp112_error_t tmp112_get_celsius (tmp112_ctx_t* ctx, float* temp);
 
+/**
+ * @brief Setting threshold temperatures t low and t high. low = +75 and high = +80 - default
+ * 
+ * @param ctx pointer to context
+ * @param tlow t low in Celsius (from -55 to 128)
+ * @param thigh t high in Celsius (from -55 to 128)
+ * @return tmp112_error_t enum
+ */
 tmp112_error_t tmp112_set_celsius_tlow_thigh (tmp112_ctx_t* ctx, float tlow, float thigh);
+
+/**
+ * @brief Setting convertion rate (0.25, 1, 4 or 8 Hz). 4 Hz - default
+ * 
+ * @param ctx pointer to context
+ * @param cr tmp112_conv_rate_t enum
+ * @return tmp112_error_t enum
+ */
 tmp112_error_t tmp112_set_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t cr);
+
+/**
+ * @brief Setting fault queue len (1, 2, 4 or 6). 1 - default
+ * 
+ * @param ctx pointer to context
+ * @param fq tmp112_fault_queue_t enum
+ * @return tmp112_error_t enum
+ */
 tmp112_error_t tmp112_set_fault_queue (tmp112_ctx_t* ctx, tmp112_fault_queue_t fq);
 
 #ifdef __cplusplus

@@ -111,6 +111,9 @@ tmp112_error_t tmp112_set_celsius_tlow_thigh  (tmp112_ctx_t* ctx, float tlow, fl
     if ((thigh < TMP112_MIN_TEMP) || (thigh > TMP112_MAX_TEMP)) {
         return TMP112_ERROR_INVALID_INPUT;
     }
+    if (tlow >= thigh) {
+        return TMP112_ERROR_INVALID_INPUT;
+    }
 
     uint8_t rc = TMP112_ERROR_UNKNOWN;
     uint16_t temp_16b = 0;
