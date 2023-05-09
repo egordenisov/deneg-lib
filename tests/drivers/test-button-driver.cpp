@@ -7,7 +7,7 @@
 static const uint64_t init_time = 67589729;
 static const uint32_t short_min_time = 4500;
 static const uint32_t long_min_time = short_min_time * 10;
-static button_ctx ctx;
+static button_ctx_t ctx;
 
 static uint64_t time_us_test = 0;
 static uint64_t get_time_us () {
@@ -15,7 +15,7 @@ static uint64_t get_time_us () {
 }
 
 static bool gpio_state = false;
-static bool get_gpio_state () {
+static bool get_gpio_state (void *phy_gpio) {
     return gpio_state;
 }
 
@@ -53,7 +53,7 @@ TEST(button_init, set_init_values)
     ctx.latch_time = 1;
 
     bool ret = 0;
-    ret = button_init (&ctx, get_time_us, get_gpio_state, 0);
+    ret = button_init (&ctx, get_time_us, get_gpio_state, NULL);
 
     EXPECT_EQ(ret, 1);
     EXPECT_EQ(ctx.push, 0);
@@ -65,22 +65,22 @@ TEST(button_init, set_init_values)
 TEST(button_init, try_invalid_ctx)
 {
     bool ret = 1;
-    ret = button_init (NULL, get_time_us, get_gpio_state, 0);
+    ret = button_init (NULL, get_time_us, get_gpio_state, NULL);
     EXPECT_EQ(ret, 0);
 
     ret = 1;
-    ret = button_init (&ctx, NULL, get_gpio_state, 0);
+    ret = button_init (&ctx, NULL, get_gpio_state, NULL);
     EXPECT_EQ(ret, 0);
 
     ret = 1;
-    ret = button_init (&ctx, get_time_us, NULL, 0);
+    ret = button_init (&ctx, get_time_us, NULL, NULL);
     EXPECT_EQ(ret, 0);
 }
 
-TEST(button_custom_timing, set_timing)
+TEST(button_set_custom_timings, set_timing)
 {
     memset(&ctx, 0, sizeof(ctx));
-    button_custom_timing(&ctx, short_min_time, long_min_time);
+    button_set_custom_timings(&ctx, short_min_time, long_min_time);
     EXPECT_EQ(ctx.spush_period_us, short_min_time);
     EXPECT_EQ(ctx.lpush_period_us, long_min_time);
 }

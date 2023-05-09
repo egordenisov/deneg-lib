@@ -27,6 +27,8 @@ static vals_t vals[] = {
     {.temp = -55,      .b1 = 0xC9, .b2 = 0x00},
 };
 
+static uint8_t buf_prev_reg_b1;
+static uint8_t buf_prev_reg_b2;
 
 static uint8_t buf_reg_b1;
 static uint8_t buf_reg_b2;
@@ -39,6 +41,8 @@ static uint8_t i2c_write (void* i2c, uint8_t* data, uint32_t size) {
     }
 
     if (size == 3) {
+        buf_prev_reg_b1 = buf_reg_b1;
+        buf_prev_reg_b2 = buf_reg_b2;
         buf_reg_b1 = data[1];
         buf_reg_b2 = data[2];
         return TMP112_OK;
@@ -115,7 +119,7 @@ TEST(tmp112_get_celsius, get_values)
 };
 
 static void check_set_tlow_thigh() {
-    tmp112_error_t rc = tmp112_set_celsius_tlow_thigh(&tmp112_ctx, vals[val_ptr].temp, vals[val_ptr].temp);
+    tmp112_error_t rc = tmp112_set_celsius_tlow_thigh(&tmp112_ctx, vals[val_ptr+1].temp, vals[val_ptr].temp);
     EXPECT_EQ(rc, TMP112_OK);
 
     return;
@@ -126,7 +130,7 @@ TEST(tmp112_set_celsius_tlow_thigh, set_values)
     tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_OK);
 
-    for (uint32_t i = 0; i < (sizeof(vals)/sizeof(vals_t)); i++) {
+    for (uint32_t i = 0; i < (sizeof(vals)/sizeof(vals_t) - 1); i++) {
         val_ptr = i;
         buf_reg_b1 = 0;
         buf_reg_b2 = 255;
@@ -134,6 +138,9 @@ TEST(tmp112_set_celsius_tlow_thigh, set_values)
 
         EXPECT_EQ(vals[val_ptr].b1, buf_reg_b1);
         EXPECT_EQ(vals[val_ptr].b2, buf_reg_b2);
+
+        EXPECT_EQ(vals[val_ptr+1].b1, buf_prev_reg_b1);
+        EXPECT_EQ(vals[val_ptr+1].b2, buf_prev_reg_b2);
     }
 };
 
