@@ -54,11 +54,11 @@ typedef enum {
 } tmp112_conv_rate_t;
 
 //===============================================================================
-//                     Main functions
+//                     Basic functions
 //===============================================================================
 
 /**
- * @brief Call this function before using driver
+ * @brief Call this function before using the driver
  * 
  * @param ctx pointer to a user-created context structure
  * @param wr pointer to a user-created i2c write function
@@ -91,7 +91,8 @@ tmp112_error_t tmp112_set_celsius_tlow_thigh (tmp112_ctx_t* ctx, float tlow, flo
 //                     Additional functions
 //===============================================================================
 
-tmp112_error_t tmp112_set_verificastion_write (tmp112_ctx_t* ctx, bool verification_write);
+tmp112_error_t tmp112_set_verification_write (tmp112_ctx_t* ctx, bool verification_write);
+
 tmp112_error_t tmp112_set_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t cr);
 tmp112_error_t tmp112_set_shutdown_mode (tmp112_ctx_t* ctx, bool sd);
 tmp112_error_t tmp112_set_thermostat_mode (tmp112_ctx_t* ctx, bool tm);

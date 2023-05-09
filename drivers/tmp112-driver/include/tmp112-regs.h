@@ -30,9 +30,10 @@ typedef union {
     uint16_t word;
 } tmp112_regs_config_t;
 
-#define TMP112_UNSIG_RESOLUTION         (TMP112_RESOLUTION - 1)
 #define TMP112_RESOLUTION_MASK          ((1 << TMP112_RESOLUTION) - 1)
-#define TMP112_UNSIG_RESOLUTION_MASK    ((1 << (TMP112_RESOLUTION - 1)) - 1)
+
+#define TMP112_UNSIG_RESOLUTION         (TMP112_RESOLUTION - 1)
+#define TMP112_UNSIG_RESOLUTION_MASK    ((1 << TMP112_UNSIG_RESOLUTION) - 1)
 
 #define TMP112_LSB_PER_CELSIUS          (16)
 

@@ -131,7 +131,7 @@ tmp112_error_t tmp112_set_celsius_tlow_thigh  (tmp112_ctx_t* ctx, float tlow, fl
     return TMP112_OK;
 }
 
-tmp112_error_t tmp112_set_verificastion_write (tmp112_ctx_t* ctx, bool verification_write) {
+tmp112_error_t tmp112_set_verification_write (tmp112_ctx_t* ctx, bool verification_write) {
     ctx->verify_write = verification_write;
     return TMP112_OK;
 }
