@@ -3,7 +3,7 @@
 
 /*
 * TMP112 temperature sensor driver
-* supports only basic functions
+* supports all functions expect extended mode
 */
 
 #include "stdint.h"
