@@ -3,20 +3,16 @@
 
 #include "stdint.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define TMP112_REGS_TEMP    (0x00)
 #define TMP112_REGS_TLOW    (0x02)
 #define TMP112_REGS_THIGH   (0x03)
 #define TMP112_REGS_CONFIG  (0x01)
 
-#define TMP112_REGS_CONFIG_FAUTLT_QUEUE_1   (0x00) // Default
-#define TMP112_REGS_CONFIG_FAUTLT_QUEUE_2   (0x01)
-#define TMP112_REGS_CONFIG_FAUTLT_QUEUE_4   (0x02)
-#define TMP112_REGS_CONFIG_FAUTLT_QUEUE_6   (0x03)
-
-#define TMP112_REGS_CONFIG_CR_025Hz         (0x00)
-#define TMP112_REGS_CONFIG_CR_1Hz           (0x01)
-#define TMP112_REGS_CONFIG_CR_4Hz           (0x02) // Default
-#define TMP112_REGS_CONFIG_CR_8Hz           (0x03)
+#define TMP112_REGS_CONFIG_DEFAULT (0x60A0)
 
 typedef union {
     struct {
@@ -39,5 +35,9 @@ typedef union {
 #define TMP112_UNSIG_RESOLUTION_MASK    ((1 << (TMP112_RESOLUTION - 1)) - 1)
 
 #define TMP112_LSB_PER_CELSIUS          (16)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __TMP112_REGS_H

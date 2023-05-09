@@ -27,28 +27,37 @@ static vals_t vals[] = {
     {.temp = -55,      .b1 = 0xC9, .b2 = 0x00},
 };
 
-static uint8_t setted_temp_b1;
-static uint8_t setted_temp_b2;
+
+static uint8_t buf_reg_b1;
+static uint8_t buf_reg_b2;
+static uint8_t buf_reg_addr;
 
 static uint8_t i2c_write (void* i2c, uint8_t* data, uint32_t size) {
-    if (size == 3) {
-        if ((data[0] == 0x02) || (data[0] == 0x03)){
-            setted_temp_b1 = data[1];
-            setted_temp_b2 = data[2];
-        }
+    buf_reg_addr = data[0];
+    if (size == 1) {
+        return TMP112_OK;
     }
 
-    return 0;
+    if (size == 3) {
+        buf_reg_b1 = data[1];
+        buf_reg_b2 = data[2];
+        return TMP112_OK;
+    }
+    return -1;
 }
 
 static uint8_t i2c_read (void* i2c, uint8_t* data, uint32_t size) {
-    if (size != 2){
+    if (size != 2) {
         return -1;
     }
+    data[0] = buf_reg_b1;
+    data[1] = buf_reg_b2;
 
-    data[0] = vals[val_ptr].b1;
-    data[1] = vals[val_ptr].b2;
-    return 0;
+    if (buf_reg_addr == 0x00) {
+        data[0] = vals[val_ptr].b1;
+        data[1] = vals[val_ptr].b2;
+    }
+    return TMP112_OK;
 }
 static uint32_t phy_i2c_ctx = 32;
 
@@ -58,7 +67,7 @@ TEST(tmp112_init, set_init_values)
     tmp112_ctx.wr_cb = NULL;
     tmp112_ctx.rd_cb = NULL;
 
-    uint8_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
     
     EXPECT_EQ(rc, TMP112_OK);
     EXPECT_EQ(tmp112_ctx.phy_i2c, &phy_i2c_ctx);
@@ -68,19 +77,19 @@ TEST(tmp112_init, set_init_values)
 
 TEST(tmp112_init, set_zero_values)
 {
-    uint8_t rc = 0;
+    tmp112_error_t rc = TMP112_OK;
     rc = tmp112_init(NULL, i2c_write, i2c_read, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_ERROR_INVALID_INPUT);
 
-    rc = 0;
+    rc = TMP112_OK;
     rc = tmp112_init(&tmp112_ctx, NULL, i2c_read, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_ERROR_INVALID_INPUT);
 
-    rc = 0;
+    rc = TMP112_OK;
     rc = tmp112_init(&tmp112_ctx, i2c_write, NULL, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_ERROR_INVALID_INPUT);
 
-    rc = 0;
+    rc = TMP112_OK;
     rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, NULL);
     EXPECT_EQ(rc, TMP112_OK);
 };
@@ -88,7 +97,7 @@ TEST(tmp112_init, set_zero_values)
 static float check_temp() {
     float temp = -255;
 
-    uint8_t rc = tmp112_get_celsius(&tmp112_ctx, &temp);
+    tmp112_error_t rc = tmp112_get_celsius(&tmp112_ctx, &temp);
     EXPECT_EQ(rc, TMP112_OK);
 
     return temp;
@@ -96,7 +105,7 @@ static float check_temp() {
 
 TEST(tmp112_get_celsius, get_values)
 {
-    uint8_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_OK);
 
     for (uint32_t i = 0; i < (sizeof(vals)/sizeof(vals_t)); i++) {
@@ -106,7 +115,7 @@ TEST(tmp112_get_celsius, get_values)
 };
 
 static void check_set_tlow_thigh() {
-    uint8_t rc = tmp112_set_celsius_tlow_thigh(&tmp112_ctx, vals[val_ptr].temp, vals[val_ptr].temp);
+    tmp112_error_t rc = tmp112_set_celsius_tlow_thigh(&tmp112_ctx, vals[val_ptr].temp, vals[val_ptr].temp);
     EXPECT_EQ(rc, TMP112_OK);
 
     return;
@@ -114,16 +123,34 @@ static void check_set_tlow_thigh() {
 
 TEST(tmp112_set_celsius_tlow_thigh, set_values)
 {
-    uint8_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_OK);
 
     for (uint32_t i = 0; i < (sizeof(vals)/sizeof(vals_t)); i++) {
         val_ptr = i;
-        setted_temp_b1 = 0;
-        setted_temp_b2 = 255;
+        buf_reg_b1 = 0;
+        buf_reg_b2 = 255;
         check_set_tlow_thigh();
 
-        EXPECT_EQ(vals[val_ptr].b1, setted_temp_b1);
-        EXPECT_EQ(vals[val_ptr].b2, setted_temp_b2);
+        EXPECT_EQ(vals[val_ptr].b1, buf_reg_b1);
+        EXPECT_EQ(vals[val_ptr].b2, buf_reg_b2);
     }
 };
+
+TEST(tmp112_set_convertion_rate, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    rc = tmp112_set_convertion_rate(&tmp112_ctx, TMP112_CONV_RATE_1Hz);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_set_fault_queue, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    rc = tmp112_set_fault_queue(&tmp112_ctx, TMP112_FAUTLT_QUEUE_2);
+    EXPECT_EQ(rc, TMP112_OK);
+}
