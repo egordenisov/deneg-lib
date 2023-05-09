@@ -63,8 +63,6 @@ static tmp112_error_t tmp112_write_reg (tmp112_ctx_t* ctx, uint8_t addr, uint16_
     uint16_t read_data = 0;
     rc = tmp112_read_reg(ctx, addr, &read_data);
     if ((rc != TMP112_OK) || (read_data != write_data)) {
-        printf("\n\n%d\n\n", read_data);
-        printf("\n\n%d\n\n", write_data);
         return TMP112_ERROR_WRITE_VERIFICATION;
     }
 
@@ -133,33 +131,101 @@ tmp112_error_t tmp112_set_celsius_tlow_thigh  (tmp112_ctx_t* ctx, float tlow, fl
     return TMP112_OK;
 }
 
-tmp112_error_t tmp112_set_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t cr) {
-    tmp112_regs_config_t config_reg;
-    tmp112_error_t rc =  tmp112_read_reg(ctx, TMP112_REGS_CONFIG, &(config_reg.word));
-    if (rc != TMP112_OK) {
-        return rc;
-    }
+tmp112_error_t tmp112_set_verificastion_write (tmp112_ctx_t* ctx, bool verification_write) {
+    ctx->verify_write = verification_write;
+    return TMP112_OK;
+}
 
-    config_reg.bf.cr = cr;
-    rc = tmp112_write_reg(ctx, TMP112_REGS_CONFIG, config_reg.word);
-    if (rc != TMP112_OK) {
-        return rc;
-    }
+//===============================================================================
+//                     Config register functions
+//===============================================================================
+
+#define TMP112_UPDATE_CONFIG_FIELD(field)                                               \
+{                                                                                       \
+    tmp112_regs_config_t config_reg;                                                    \
+    tmp112_error_t rc =  tmp112_read_reg(ctx, TMP112_REGS_CONFIG, &(config_reg.word));  \
+    if (rc != TMP112_OK) {                                                              \
+        return rc;                                                                      \
+    }                                                                                   \
+                                                                                        \
+    config_reg.bf.field = field;                                                        \
+    rc = tmp112_write_reg(ctx, TMP112_REGS_CONFIG, config_reg.word);                    \
+    if (rc != TMP112_OK) {                                                              \
+        return rc;                                                                      \
+    }                                                                                   \
+}                                                                                       \
+
+tmp112_error_t tmp112_set_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t cr) {
+    TMP112_UPDATE_CONFIG_FIELD(cr);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_set_shutdown_mode (tmp112_ctx_t* ctx, bool sd) {
+    TMP112_UPDATE_CONFIG_FIELD(sd);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_set_thermostat_mode (tmp112_ctx_t* ctx, bool tm) {
+    TMP112_UPDATE_CONFIG_FIELD(tm);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_set_alert_polarity (tmp112_ctx_t* ctx, bool pol) {
+    TMP112_UPDATE_CONFIG_FIELD(pol);
     return TMP112_OK;
 }
 
 tmp112_error_t tmp112_set_fault_queue (tmp112_ctx_t* ctx, tmp112_fault_queue_t fq) {
-    tmp112_regs_config_t config_reg;
-    tmp112_error_t rc =  tmp112_read_reg(ctx, TMP112_REGS_CONFIG, &(config_reg.word));
-    if (rc != TMP112_OK) {
-        return rc;
-    }
-
-    config_reg.bf.fault = fq;
-    rc = tmp112_write_reg(ctx, TMP112_REGS_CONFIG, config_reg.word);
-    if (rc != TMP112_OK) {
-        return rc;
-    }
+    TMP112_UPDATE_CONFIG_FIELD(fq);
     return TMP112_OK;
 }
 
+tmp112_error_t tmp112_set_one_shot (tmp112_ctx_t* ctx, bool os) {
+    TMP112_UPDATE_CONFIG_FIELD(os);
+    return TMP112_OK;
+}
+
+#define TMP112_READ_CONFIG_FIELD(field)                                                 \
+{                                                                                       \
+    tmp112_regs_config_t config_reg;                                                    \
+    tmp112_error_t rc =  tmp112_read_reg(ctx, TMP112_REGS_CONFIG, &(config_reg.word));  \
+    if (rc != TMP112_OK) {                                                              \
+        return rc;                                                                      \
+    }                                                                                   \
+    *field = config_reg.bf.field;                                                       \
+}                                                                                       \
+
+tmp112_error_t tmp112_get_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t* cr) {
+    TMP112_READ_CONFIG_FIELD(cr);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_get_shutdown_mode (tmp112_ctx_t* ctx, bool* sd) {
+    TMP112_READ_CONFIG_FIELD(sd);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_get_thermostat_mode (tmp112_ctx_t* ctx, bool* tm) {
+    TMP112_READ_CONFIG_FIELD(tm);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_get_alert_polarity (tmp112_ctx_t* ctx, bool* pol) {
+    TMP112_READ_CONFIG_FIELD(pol);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_get_fault_queue (tmp112_ctx_t* ctx, tmp112_fault_queue_t* fq) {
+    TMP112_READ_CONFIG_FIELD(fq);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_get_one_shot (tmp112_ctx_t* ctx, bool* os) {
+    TMP112_READ_CONFIG_FIELD(os);
+    return TMP112_OK;
+}
+
+tmp112_error_t tmp112_get_alert (tmp112_ctx_t* ctx, bool* al) {
+    TMP112_READ_CONFIG_FIELD(al);
+    return TMP112_OK;
+}

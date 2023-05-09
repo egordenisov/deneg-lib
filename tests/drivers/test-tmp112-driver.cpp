@@ -153,11 +153,117 @@ TEST(tmp112_set_convertion_rate, execute)
     EXPECT_EQ(rc, TMP112_OK);
 }
 
+TEST(tmp112_set_shutdown_mode, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    rc = tmp112_set_shutdown_mode(&tmp112_ctx, true);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_set_thermostat_mode, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    rc = tmp112_set_thermostat_mode(&tmp112_ctx, true);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_set_alert_polarity, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    rc = tmp112_set_alert_polarity(&tmp112_ctx, true);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
 TEST(tmp112_set_fault_queue, execute)
 {
     tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
     EXPECT_EQ(rc, TMP112_OK);
 
-    rc = tmp112_set_fault_queue(&tmp112_ctx, TMP112_FAUTLT_QUEUE_2);
+    rc = tmp112_set_fault_queue(&tmp112_ctx, TMP112_FAUTLT_QUEUE_4);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_set_one_shot, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    rc = tmp112_set_one_shot(&tmp112_ctx, true);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_convertion_rate, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    tmp112_conv_rate_t res;
+    rc = tmp112_get_convertion_rate(&tmp112_ctx, &res);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_shutdown_mode, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    bool res;
+    rc = tmp112_get_shutdown_mode(&tmp112_ctx, &res);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_thermostat_mode, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    bool res;
+    rc = tmp112_get_thermostat_mode(&tmp112_ctx, &res);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_alert_polarity, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    bool res;
+    rc = tmp112_get_alert_polarity(&tmp112_ctx, &res);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_fault_queue, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    tmp112_fault_queue_t res;
+    rc = tmp112_get_fault_queue(&tmp112_ctx, &res);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_one_shot, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    bool res;
+    rc = tmp112_get_one_shot(&tmp112_ctx, &res);
+    EXPECT_EQ(rc, TMP112_OK);
+}
+
+TEST(tmp112_get_alert, execute)
+{
+    tmp112_error_t rc = tmp112_init(&tmp112_ctx, i2c_write, i2c_read, &phy_i2c_ctx);
+    EXPECT_EQ(rc, TMP112_OK);
+
+    bool res;
+    rc = tmp112_get_alert(&tmp112_ctx, &res);
     EXPECT_EQ(rc, TMP112_OK);
 }

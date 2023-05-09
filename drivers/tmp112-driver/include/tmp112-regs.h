@@ -16,16 +16,16 @@ extern "C" {
 
 typedef union {
     struct {
-        uint16_t reserved0  : 4;
-        uint16_t em         : 1;
-        uint16_t al         : 1;
-        uint16_t cr         : 2;
-        uint16_t sd         : 1;
-        uint16_t tm         : 1;
-        uint16_t pol        : 1;
-        uint16_t fault      : 2;
-        uint16_t resolution : 2;
-        uint16_t os         : 1;
+        uint16_t reserved0  : 4; // Not used in TMP112
+        uint16_t em         : 1; // Extended mode (extend to 13-bits) Not used in this driver
+        uint16_t al         : 1; // Alert. Read-only. 
+        uint16_t cr         : 2; // Convertion rate. 0.25, 1, 4 or 8 Hz. Default 4 Hz
+        uint16_t sd         : 1; // Shutdown mode
+        uint16_t tm         : 1; // Thermostat mode
+        uint16_t pol        : 1; // Polarity of alert pin
+        uint16_t fq         : 2; // Fault queue. 1, 2, 4 or 6. Default 1
+        uint16_t resolution : 2; // Resolution. Read-only
+        uint16_t os         : 1; // One-shot.
     } bf;
     uint16_t word;
 } tmp112_regs_config_t;

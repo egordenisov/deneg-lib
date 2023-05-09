@@ -53,6 +53,10 @@ typedef enum {
     TMP112_CONV_RATE_8Hz         = 0x03,
 } tmp112_conv_rate_t;
 
+//===============================================================================
+//                     Main functions
+//===============================================================================
+
 /**
  * @brief Call this function before using driver
  * 
@@ -83,23 +87,25 @@ tmp112_error_t tmp112_get_celsius (tmp112_ctx_t* ctx, float* temp);
  */
 tmp112_error_t tmp112_set_celsius_tlow_thigh (tmp112_ctx_t* ctx, float tlow, float thigh);
 
-/**
- * @brief Setting convertion rate (0.25, 1, 4 or 8 Hz). 4 Hz - default
- * 
- * @param ctx pointer to context
- * @param cr tmp112_conv_rate_t enum
- * @return tmp112_error_t enum
- */
-tmp112_error_t tmp112_set_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t cr);
+//===============================================================================
+//                     Additional functions
+//===============================================================================
 
-/**
- * @brief Setting fault queue len (1, 2, 4 or 6). 1 - default
- * 
- * @param ctx pointer to context
- * @param fq tmp112_fault_queue_t enum
- * @return tmp112_error_t enum
- */
+tmp112_error_t tmp112_set_verificastion_write (tmp112_ctx_t* ctx, bool verification_write);
+tmp112_error_t tmp112_set_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t cr);
+tmp112_error_t tmp112_set_shutdown_mode (tmp112_ctx_t* ctx, bool sd);
+tmp112_error_t tmp112_set_thermostat_mode (tmp112_ctx_t* ctx, bool tm);
+tmp112_error_t tmp112_set_alert_polarity (tmp112_ctx_t* ctx, bool pol);
 tmp112_error_t tmp112_set_fault_queue (tmp112_ctx_t* ctx, tmp112_fault_queue_t fq);
+tmp112_error_t tmp112_set_one_shot (tmp112_ctx_t* ctx, bool os);
+
+tmp112_error_t tmp112_get_convertion_rate (tmp112_ctx_t* ctx, tmp112_conv_rate_t* cr);
+tmp112_error_t tmp112_get_shutdown_mode (tmp112_ctx_t* ctx, bool* sd);
+tmp112_error_t tmp112_get_thermostat_mode (tmp112_ctx_t* ctx, bool* tm);
+tmp112_error_t tmp112_get_alert_polarity (tmp112_ctx_t* ctx, bool* pol);
+tmp112_error_t tmp112_get_fault_queue (tmp112_ctx_t* ctx, tmp112_fault_queue_t* fq);
+tmp112_error_t tmp112_get_one_shot (tmp112_ctx_t* ctx, bool* os);
+tmp112_error_t tmp112_get_alert (tmp112_ctx_t* ctx, bool* al);
 
 #ifdef __cplusplus
 }
