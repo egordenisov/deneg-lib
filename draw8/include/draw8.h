@@ -16,6 +16,11 @@ typedef enum {
     D8_RGB565       = 16,
 } d8_color_type_t;
 
+typedef enum {
+    D8_BUF_FULL_SIZE  = 1,
+    D8_BUF_ONE_FOURTH = 4,
+} d8_buf_type_t;
+
 enum {
     D8_OK = 0,
     D8_NULL_PTR,
@@ -32,7 +37,7 @@ enum {
  * ->->->->->->->->->->
  * ->->->->->->->->x2y2
  */
-typedef void (*d8_draw_raw) (void* disp_ctx, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t* data);
+typedef void (*d8_draw_raw_t) (void* disp_ctx, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t* data);
 
 typedef struct {
     uint8_t r;
@@ -42,19 +47,20 @@ typedef struct {
 } d8_color_t;
 
 typedef struct {
-    uint16_t w;
-    uint16_t h;
+    uint16_t        w;
+    uint16_t        h;
     d8_color_type_t color_type;
-    d8_draw_raw draw;
+    d8_draw_raw_t   draw;
 
-    uint8_t* buf;
-    uint32_t buf_len;
-    void* disp_ctx;
+    uint8_t*        buf;
+    uint32_t        buf_len;
+    d8_buf_type_t   buf_type;
 
+    void*           disp_ctx;
 
-    d8_font_t default_font;
+    d8_font_t       default_font;
 
-    char buf_str[D8_MAX_STR_LEN];
+    char            buf_str[D8_MAX_STR_LEN];
 } d8_ctx_t;
 
 typedef struct {
@@ -102,7 +108,7 @@ typedef struct {
     d8_color_type_t color_type;
     uint8_t*        buf;
     uint32_t        buf_len;
-    d8_draw_raw     draw;
+    d8_draw_raw_t   draw;
     void*           disp_ctx;
 } d8_init_t;
 
